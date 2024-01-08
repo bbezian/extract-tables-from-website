@@ -7,27 +7,24 @@ import zipfile
 # Function to fetch and save tables
 def fetch_and_save_tables(url, loc):
     try:
-        # Check if the URL is not empty
         if not url:
             st.warning("Please enter a valid URL.")
             return
 
-        # Write the code for calling the website
         request = Request(url)
         request.add_header('user-agent', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36')
 
-        # Fetch the HTML content
         with urlopen(request) as page:
             html_content = page.read()
 
-        # Read tables from HTML content
         tables = pd.read_html(html_content)
 
         if not tables:
             st.warning("No tables found on the page.")
             return
 
-        # Save each table as a separate CSV file
+        os.makedirs(loc, exist_ok=True)  # Ensure the directory exists
+
         zip_filename = os.path.join(loc, 'tables.zip')
         with zipfile.ZipFile(zip_filename, 'w') as zip_file:
             for i, table in enumerate(tables, start=1):
@@ -36,7 +33,7 @@ def fetch_and_save_tables(url, loc):
                 table.to_csv(file_path, index=False)
                 zip_file.write(file_path, file_name)
 
-                st.success(f"Table {i} saved as {file_path}")
+                st.success(f"Table {i} saved as {file_name}")
                 st.write(table)
 
         st.success(f"All tables saved successfully. Click the button below to download.")
@@ -62,7 +59,4 @@ if st.button("Fetch and Save Tables"):
         zip_filename = fetch_and_save_tables(url, loc)
     else:
         st.warning("Please enter a directory to save the CSV files.")
-
-
-
 
