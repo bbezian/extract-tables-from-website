@@ -63,12 +63,6 @@ if st.button("Fetch and Save Tables"):
     else:
         st.warning("Please enter a directory to save the CSV files.")
 
-# Download button
-if 'zip_filename' in locals():
-    st.download_button(
-        label="Download Tables as ZIP",
-        key="download_button",
-        on_click=None,
-        args=(zip_filename,),
-        help="Click to download the tables as a ZIP file.",
-    )
+
+
+
